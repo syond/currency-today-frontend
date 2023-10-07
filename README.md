@@ -1,0 +1,1 @@
+Check the currencie exchange prices
