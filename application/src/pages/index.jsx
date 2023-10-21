@@ -1,29 +1,39 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import moment from "moment";
 
 import Image from "next/image";
 
 const fetcher = (resource) => fetch(`${process.env.NEXT_PUBLIC_API_URL}${resource}`).then((res) => res.json());
 
+function formatToDateTime(value) {
+  return moment(value).format("DD/MM/YYYY - hh:mm:ss");
+}
+
+function formatCurrency(value, code) {
+  return value.toLocaleString(undefined, {
+    style: "currency",
+    currency: code,
+  });
+}
+
+const flagObjects = [
+  { src: '/UE.png', currency_symbol: 'EUR' },
+  { src: '/UK.png', currency_symbol: 'GBP' },
+  { src: '/USA.png', currency_symbol: 'USD' },
+  { src: '/CAD.png', currency_symbol: 'CAD' },
+]
+
 export default function Home() {
-  const [flag, setFlag] = useState("USD");
-  const [currencyPrice, setCurrencyPrice] = useState(0);
+  const [flag, setFlag] = useState('USD');
+  const [currencyPrice, setCurrencyPrice] = useState(null);
   const [response, setResponse] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  function handleClickFlag(e) {
-    const value = e.target.attributes.alt.value;
-
-    console.log('antes >>>', flag)
-
-    setFlag(value);
-
-    console.log('depois >>>', flag)
-
-    getCurrency(value);
+  function handleClickFlag(currencySymbol) {
+    setFlag(() => currencySymbol);
   }
 
-  function getCurrency() {
+  function loadCurrencyPrice() {
     if (
       response.currencies_exchange &&
       response.currencies_exchange.length > 0
@@ -36,40 +46,13 @@ export default function Home() {
     }
   }
 
-  function formatCurrency(value, code) {
-    return value.toLocaleString(undefined, {
-      style: "currency",
-      currency: code,
-    });
-  }
-
-  function formatToDateTime(value) {
-    return moment(value).format("DD/MM/YYYY - hh:mm:ss");
-  }
-
-  // const getCurrenciesExchange = useCallback(async () => {
-  //   setIsLoading(true);
-
-  //   try {
-  //     const result = await fetcher('/currency/BRL');
-
-  //     setResponse(result);
-  //     getCurrency();
-  //   } catch (e) {
-  //     throw new Error(e);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, []);
-
-  const getCurrenciesExchange = async () => {
+  const requestGetCurrenciesExchange = async () => {
     setIsLoading(true);
 
     try {
       const result = await fetcher('/currency/BRL');
 
       setResponse(result);
-      getCurrency();
     } catch (e) {
       throw new Error(e);
     } finally {
@@ -77,9 +60,33 @@ export default function Home() {
     }
   };
 
+  const FlagList = () => {
+    return flagObjects.map(image => (
+      <div
+        key={image.currency_symbol}
+        className={`
+          rounded-md border border-purple ring-4 hover:brightness-100 transition delay-50 cursor-pointer
+          ${flag === image.currency_symbol ? "brightness-100" : "brightness-50"}
+        `}
+        onClick={() => handleClickFlag(image.currency_symbol)}
+      >
+        <Image
+          src={image.src}
+          alt={image.currency_symbol}
+          width="90"
+          height="90"
+        />
+      </div>
+    ))
+  }
+
   useEffect(() => {
-    getCurrenciesExchange();
+    requestGetCurrenciesExchange();
   }, []);
+
+  useEffect(() => {
+    loadCurrencyPrice();
+  }, [response, flag]);
 
   return (
     <div className="container max-w-full max-h-screen">
@@ -102,7 +109,7 @@ export default function Home() {
                 className="text-4xl text-neutral font-bold"
                 suppressHydrationWarning
               >
-                {formatCurrency(1, flag)}
+                {flag ? formatCurrency(1, flag) : null}
               </span>
               <span className="text-2xl text-neutral font-medium pl-3">=</span>
               <span className="text-4xl text-neutral font-bold pl-3">
@@ -117,48 +124,7 @@ export default function Home() {
       </section>
 
       <section className="flex justify-center items-center space-x-5">
-        <div
-          className={`
-            rounded-md border border-purple ring-4 hover:brightness-100 transition delay-50 cursor-pointer
-            ${flag === "EUR" ? "brightness-100" : "brightness-50"}
-          `}
-        >
-          <Image
-            src="/UE.png"
-            alt="EUR"
-            width="90"
-            height="90"
-            onClick={handleClickFlag}
-          />
-        </div>
-        <div
-          className={`
-            rounded-md border border-purple ring-4 hover:brightness-100 transition delay-50 cursor-pointer
-            ${flag === "GBP" ? "brightness-100" : "brightness-50"}
-          `}
-        >
-          <Image
-            src="/UK.png"
-            alt="GBP"
-            width="90"
-            height="90"
-            onClick={handleClickFlag}
-          />
-        </div>
-        <div
-          className={`
-            rounded-md border border-purple ring-4 hover:brightness-100 transition delay-50 cursor-pointer
-            ${flag === "USD" ? "brightness-100" : "brightness-50"}
-          `}
-        >
-          <Image
-            src="/USA.png"
-            alt="USD"
-            width="90"
-            height="90"
-            onClick={handleClickFlag}
-          />
-        </div>
+        <FlagList />
       </section>
     </div>
   );
