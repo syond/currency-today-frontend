@@ -3,7 +3,7 @@ import moment from "moment";
 
 import Image from "next/image";
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+const fetcher = (resource) => fetch(`${process.env.NEXT_PUBLIC_API_URL}${resource}`).then((res) => res.json());
 
 export default function Home() {
   const [flag, setFlag] = useState("USD");
@@ -14,7 +14,11 @@ export default function Home() {
   function handleClickFlag(e) {
     const value = e.target.attributes.alt.value;
 
+    console.log('antes >>>', flag)
+
     setFlag(value);
+
+    console.log('depois >>>', flag)
 
     getCurrency(value);
   }
@@ -43,11 +47,26 @@ export default function Home() {
     return moment(value).format("DD/MM/YYYY - hh:mm:ss");
   }
 
-  const getCurrenciesExchange = useCallback(async () => {
+  // const getCurrenciesExchange = useCallback(async () => {
+  //   setIsLoading(true);
+
+  //   try {
+  //     const result = await fetcher('/currency/BRL');
+
+  //     setResponse(result);
+  //     getCurrency();
+  //   } catch (e) {
+  //     throw new Error(e);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, []);
+
+  const getCurrenciesExchange = async () => {
     setIsLoading(true);
 
     try {
-      const result = await fetcher(`http://localhost:5000/currency/BRL`);
+      const result = await fetcher('/currency/BRL');
 
       setResponse(result);
       getCurrency();
@@ -56,11 +75,11 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     getCurrenciesExchange();
-  }, [getCurrenciesExchange]);
+  }, []);
 
   return (
     <div className="container max-w-full max-h-screen">
