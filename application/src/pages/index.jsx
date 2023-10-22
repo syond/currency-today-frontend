@@ -3,7 +3,10 @@ import moment from "moment";
 
 import Image from "next/image";
 
-const fetcher = (resource) => fetch(`${process.env.NEXT_PUBLIC_API_URL}${resource}`).then((res) => res.json());
+const fetcher = (resource) =>
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}${resource}`).then((res) =>
+    res.json()
+  );
 
 function formatToDateTime(value) {
   return moment(value).format("DD/MM/YYYY - hh:mm:ss");
@@ -17,14 +20,14 @@ function formatCurrency(value, code) {
 }
 
 const flagObjects = [
-  { src: '/UE.png', currency_symbol: 'EUR' },
-  { src: '/UK.png', currency_symbol: 'GBP' },
-  { src: '/USA.png', currency_symbol: 'USD' },
-  { src: '/CAD.png', currency_symbol: 'CAD' },
-]
+  { src: "/UE.png", currency_symbol: "EUR" },
+  { src: "/UK.png", currency_symbol: "GBP" },
+  { src: "/USA.png", currency_symbol: "USD" },
+  // { src: '/CAD.png', currency_symbol: 'CAD' },
+];
 
 export default function Home() {
-  const [flag, setFlag] = useState('USD');
+  const [flag, setFlag] = useState("USD");
   const [currencyPrice, setCurrencyPrice] = useState(null);
   const [response, setResponse] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +53,7 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      const result = await fetcher('/currency/BRL');
+      const result = await fetcher("/currency/BRL");
 
       setResponse(result);
     } catch (e) {
@@ -60,8 +63,20 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    requestGetCurrenciesExchange();
+  }, []);
+
+  useEffect(() => {
+    loadCurrencyPrice();
+  }, [response, flag]);
+
+  /**
+   * Component
+   * @returns
+   */
   const FlagList = () => {
-    return flagObjects.map(image => (
+    return flagObjects.map((image) => (
       <div
         key={image.currency_symbol}
         className={`
@@ -77,16 +92,23 @@ export default function Home() {
           height="90"
         />
       </div>
-    ))
-  }
+    ));
+  };
 
-  useEffect(() => {
-    requestGetCurrenciesExchange();
-  }, []);
-
-  useEffect(() => {
-    loadCurrencyPrice();
-  }, [response, flag]);
+  /**
+   * Generic Component
+   * @param {*} props
+   * @returns
+   */
+  const SkeletonLoading = (props) => {
+    return (
+      <div className={`animate-pulse ${props.className}`}>
+        {/* <div className={`flex ${props.column ? 'flex-col' : ''} space-y-2 justify-center items-center`}>
+        </div> */}
+        {props.children}
+      </div>
+    );
+  };
 
   return (
     <div className="container max-w-full max-h-screen">
@@ -101,7 +123,12 @@ export default function Home() {
         </div>
 
         {isLoading ? (
-          <p>Loading...</p>
+          <SkeletonLoading>
+            <div className="flex flex-col space-y-2 justify-center items-center">
+              <div className="h-5 w-80 bg-slate-700 rounded"></div>
+              <div className="h-3 w-52 bg-slate-700 rounded"></div>
+            </div>
+          </SkeletonLoading>
         ) : (
           <>
             <div className="mb-2">
@@ -124,7 +151,17 @@ export default function Home() {
       </section>
 
       <section className="flex justify-center items-center space-x-5">
-        <FlagList />
+        {isLoading ? (
+          <SkeletonLoading>
+            <div className="flex space-x-5 justify-center items-center">
+              <div className="h-20 w-20 bg-slate-700 rounded"></div>
+              <div className="h-20 w-20 bg-slate-700 rounded"></div>
+              <div className="h-20 w-20 bg-slate-700 rounded"></div>
+            </div>
+          </SkeletonLoading>
+        ) : (
+          <FlagList />
+        )}
       </section>
     </div>
   );

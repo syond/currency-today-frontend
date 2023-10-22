@@ -23,6 +23,7 @@ module.exports = {
       'gray': '#8492a6',
       'gray-light': '#d3dce6',
       'neutral': '#fafafa',
+      'slate-700': '#334155', // used by skeleton
     },
     fontFamily: {
       sans: ['Graphik', 'sans-serif'],
