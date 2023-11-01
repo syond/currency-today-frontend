@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ConfigModalFormContext } from "@/Contexts";
 import moment from "moment";
 
 import Image from "next/image";
@@ -27,10 +28,14 @@ const flagObjects = [
 ];
 
 export default function Home() {
+  const configFormCtx = useContext(ConfigModalFormContext)
+
   const [flag, setFlag] = useState("USD");
   const [currencyPrice, setCurrencyPrice] = useState(null);
   const [response, setResponse] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const [intervalID, setIntervalID] = useState(null);
 
   function handleClickFlag(currencySymbol) {
     setFlag(() => currencySymbol);
@@ -70,6 +75,23 @@ export default function Home() {
   useEffect(() => {
     loadCurrencyPrice();
   }, [response, flag]);
+
+  useEffect(() => {
+    console.log(configFormCtx)
+
+    if (configFormCtx.timeUpdateInterval === 0) {
+      clearInterval(intervalID);
+      setIntervalID(null);
+    }
+
+    if (configFormCtx.timeUpdateInterval > 0) {
+      setIntervalID(
+        setInterval(() => {
+          requestGetCurrenciesExchange();
+        }, configFormCtx.timeUpdateInterval)
+      );
+    }
+  }, [configFormCtx.timeUpdateInterval]);
 
   /**
    * Component

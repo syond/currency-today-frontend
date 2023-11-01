@@ -12,25 +12,24 @@ const selectOptions = [
     label: "-",
   },
   {
-    value: 5000,
+    value: 300000,
     label: "5 minutes",
   },
   {
-    value: 10000,
+    value: 600000,
     label: "10 minutes",
   },
   {
-    value: 15000,
+    value: 900000,
     label: "15 minutes",
   },
 ];
 
-export default function Navbar() {
+export default function Navbar({ configModalForm }) {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [toggleConfigModal, setToggleConfigModal] = useState(false);
 
   const [timeUpdateInterval, setTimeUpdateInterval] = useState(0);
-  const [intervalID, setIntervalID] = useState(null);
 
   function handleToggleMenu() {
     if (toggleMenu) setToggleMenu(false);
@@ -48,28 +47,18 @@ export default function Navbar() {
 
   /**
    * TODO: Move this to specific component in the future
-   * @param {*} event 
+   * @param {*} event
    */
   function handleSelectUpdateInterval(event) {
     const value = +event.target.value;
 
     setTimeUpdateInterval(value);
-
-    console.log(value);
   }
-  useEffect(() => {
-    if (timeUpdateInterval === 0) {
-      clearInterval(intervalID);
-      setIntervalID(null);
-    }
 
-    if (timeUpdateInterval > 0) {
-      setIntervalID(
-        setInterval(() => {
-          console.log("MAKE REQUEST", timeUpdateInterval);
-        }, timeUpdateInterval)
-      );
-    }
+  useEffect(() => {
+    configModalForm({
+      timeUpdateInterval,
+    });
   }, [timeUpdateInterval]);
 
   return (
@@ -99,7 +88,10 @@ export default function Navbar() {
                   </div>
                   <div className="">
                     <label htmlFor="">Update interval</label>
-                    <select onChange={handleSelectUpdateInterval} className="bg-purple-800">
+                    <select
+                      onChange={handleSelectUpdateInterval}
+                      className="bg-purple-800"
+                    >
                       {selectOptions.map((opt) => (
                         <option key={opt.value} value={opt.value}>
                           {opt.label}

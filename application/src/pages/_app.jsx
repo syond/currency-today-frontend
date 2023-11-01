@@ -8,7 +8,7 @@ export default function App({ Component, pageProps }) {
   return (
     <Layout>
       <Head>
-        <title>My new cool app</title>
+        <title>Currency Today</title>
       </Head>
       <Component {...pageProps} />
     </Layout>
