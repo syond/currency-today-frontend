@@ -4,11 +4,33 @@ import Image from "next/image";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { BsGithub } from "react-icons/bs";
 import { AiFillLinkedin } from "react-icons/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const selectOptions = [
+  {
+    value: 0,
+    label: "-",
+  },
+  {
+    value: 5000,
+    label: "5 minutes",
+  },
+  {
+    value: 10000,
+    label: "10 minutes",
+  },
+  {
+    value: 15000,
+    label: "15 minutes",
+  },
+];
 
 export default function Navbar() {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [toggleConfigModal, setToggleConfigModal] = useState(false);
+
+  const [timeUpdateInterval, setTimeUpdateInterval] = useState(0);
+  const [intervalID, setIntervalID] = useState(null);
 
   function handleToggleMenu() {
     if (toggleMenu) setToggleMenu(false);
@@ -18,56 +40,86 @@ export default function Navbar() {
   function handleToggleMenuItem(event) {
     const valueNameAttr = event.target.name;
 
-    if (valueNameAttr === 'configuration') {
-      setToggleConfigModal(true)
-      setToggleMenu(false)
-    }    
+    if (valueNameAttr === "configuration") {
+      setToggleConfigModal(true);
+      setToggleMenu(false);
+    }
   }
+
+  /**
+   * TODO: Move this to specific component in the future
+   * @param {*} event 
+   */
+  function handleSelectUpdateInterval(event) {
+    const value = +event.target.value;
+
+    setTimeUpdateInterval(value);
+
+    console.log(value);
+  }
+  useEffect(() => {
+    if (timeUpdateInterval === 0) {
+      clearInterval(intervalID);
+      setIntervalID(null);
+    }
+
+    if (timeUpdateInterval > 0) {
+      setIntervalID(
+        setInterval(() => {
+          console.log("MAKE REQUEST", timeUpdateInterval);
+        }, timeUpdateInterval)
+      );
+    }
+  }, [timeUpdateInterval]);
 
   return (
     <nav className="bg-purple-600 mb-12 ">
       {toggleConfigModal && (
-            <>
-              <div className="absolute top-[90px] inset-x-0 max-w-full z-100 flex justify-center duration-500 transition-all">
-                <div className="w-10/12 bg-purple-900 text-neutral p-4 flex flex-col items-center">
-                  {/* modal-header */}
-                  <div>
-                    <h5>Title</h5>
-                    <button onClick={() => setToggleConfigModal(false)}>Close</button>
-                  </div>
-                  {/* modal-body */}
-                  <div>
-                    <form>
-                      <div className="">
-                        <label htmlFor="">Dark theme</label>
-                        <input type="checkbox" />
-                      </div>
-                      <div className="">
-                        <label htmlFor="">Sound alert when hit price</label>
-                        <input type="text" />
-                        <legend>aqui vai ser um range</legend>
-                      </div>
-                      <div className="">
-                        <label htmlFor="">Update time</label>
-                        <select id="updateTime">
-                          <option value="">5 minutes</option>
-                          <option value="">10 minutes</option>
-                          <option value="">15 minutes</option>
-                        </select>
-                      </div>
-
-                      <button type="submit">Save</button>
-                      <button type="reset"></button>
-                    </form>
-                  </div>
-                  {/* modal-footer */}
-                  <div></div>
-                </div>
+        <>
+          <div className="absolute top-[90px] inset-x-0 max-w-full z-100 flex justify-center duration-500 transition-all">
+            <div className="w-10/12 bg-purple-900 text-neutral p-4 flex flex-col items-center">
+              {/* modal-header */}
+              <div>
+                <h5>Title</h5>
+                <button onClick={() => setToggleConfigModal(false)}>
+                  Close
+                </button>
               </div>
-              
-              <div className="backdrop-brightness-50 bg-white/30"></div>
-            </>
-          )}
+              {/* modal-body */}
+              <div>
+                <form>
+                  <div className="">
+                    <label htmlFor="">Dark theme</label>
+                    <input type="checkbox" className="bg-purple-800" />
+                  </div>
+                  <div className="">
+                    <label htmlFor="">Sound alert when hit price</label>
+                    <input type="text" className="bg-purple-800" />
+                    <legend>aqui vai ser um range</legend>
+                  </div>
+                  <div className="">
+                    <label htmlFor="">Update interval</label>
+                    <select onChange={handleSelectUpdateInterval} className="bg-purple-800">
+                      {selectOptions.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <button type="submit">Save</button>
+                  <button type="reset"></button>
+                </form>
+              </div>
+              {/* modal-footer */}
+              <div></div>
+            </div>
+          </div>
+
+          <div className="backdrop-brightness-50 bg-white/30"></div>
+        </>
+      )}
       <div className="flex flex-row items-center justify-between p-3">
         <Image src="/logo.png" alt="logo" width="160" height="160" />
 
@@ -95,7 +147,11 @@ export default function Navbar() {
                 <a className="pb-4 font-semibold text-lg" href="">
                   About
                 </a>
-                <a className="pb-4 font-semibold text-lg" name="configuration" onClick={handleToggleMenuItem}>
+                <a
+                  className="pb-4 font-semibold text-lg"
+                  name="configuration"
+                  onClick={handleToggleMenuItem}
+                >
                   Configuration
                 </a>
                 <a className="pb-4 font-semibold text-lg" href="">
