@@ -55,82 +55,92 @@ export default function Navbar({ configModalForm }) {
     setTimeUpdateInterval(value);
   }
 
-  useEffect(() => {
+  function saveConfigModal(e) {
+    e.preventDefault();
+
     configModalForm({
       timeUpdateInterval,
     });
-  }, [timeUpdateInterval]);
+
+    setToggleConfigModal(false);
+  }
+
+  const Button = ({ onClick, type, children }) => {
+    return <button className="p-2 bg-green rounded-md" onClick={onClick} type={type}>{children}</button>
+  }
+
+  /**
+   * @component
+   */
+  const Modal = ({ title, children }) => {
+    return (
+      <div className="absolute top-[90px] inset-x-0 max-w-full z-10 flex justify-center duration-500 transition-all">
+        <div className="w-10/12 bg-purple-900 text-neutral p-4 flex flex-col items-center">
+          {/* modal-header */}
+          <div>
+            <h5>{title}</h5>
+            <Button onClick={() => setToggleConfigModal(false)}>Close</Button>
+          </div>
+          {/* modal-body */}
+          <div>{children}</div>
+          {/* modal-footer */}
+          <div></div>
+        </div>
+      </div>
+    );
+  };
+
+  /**
+   * @component
+   */
+  const ConfigModal = () => {
+    return (
+      <Modal title="Configuration">
+        <form onSubmit={saveConfigModal}>
+          <div className="">
+            <label htmlFor="">Dark theme</label>
+            <input type="checkbox" className="bg-purple-800" />
+          </div>
+          <div className="">
+            <label htmlFor="">Sound alert when hit price</label>
+            <input type="text" className="bg-purple-800" />
+            <legend>aqui vai ser um range</legend>
+          </div>
+          <div className="">
+            <label htmlFor="">Update interval</label>
+            <select
+              onChange={handleSelectUpdateInterval}
+              className="bg-purple-800"
+            >
+              {selectOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <Button type="submit">Save</Button>
+          <Button type="reset">Reset</Button>
+        </form>
+      </Modal>
+    );
+  };
 
   return (
     <nav className="bg-purple-600 mb-12 ">
-      {toggleConfigModal && (
-        <>
-          <div className="absolute top-[90px] inset-x-0 max-w-full z-100 flex justify-center duration-500 transition-all">
-            <div className="w-10/12 bg-purple-900 text-neutral p-4 flex flex-col items-center">
-              {/* modal-header */}
-              <div>
-                <h5>Title</h5>
-                <button onClick={() => setToggleConfigModal(false)}>
-                  Close
-                </button>
-              </div>
-              {/* modal-body */}
-              <div>
-                <form>
-                  <div className="">
-                    <label htmlFor="">Dark theme</label>
-                    <input type="checkbox" className="bg-purple-800" />
-                  </div>
-                  <div className="">
-                    <label htmlFor="">Sound alert when hit price</label>
-                    <input type="text" className="bg-purple-800" />
-                    <legend>aqui vai ser um range</legend>
-                  </div>
-                  <div className="">
-                    <label htmlFor="">Update interval</label>
-                    <select
-                      onChange={handleSelectUpdateInterval}
-                      className="bg-purple-800"
-                    >
-                      {selectOptions.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <button type="submit">Save</button>
-                  <button type="reset"></button>
-                </form>
-              </div>
-              {/* modal-footer */}
-              <div></div>
-            </div>
-          </div>
-
-          <div className="backdrop-brightness-50 bg-white/30"></div>
-        </>
-      )}
+      {toggleConfigModal && <ConfigModal />}
       <div className="flex flex-row items-center justify-between p-3">
         <Image src="/logo.png" alt="logo" width="160" height="160" />
 
         <div className="flex flex-row items-center">
-          <div
-            id="navbar-default"
-            className="hidden text-neutral font-medium text-xl md:block md:w-auto"
-          >
+          <div className="hidden text-neutral font-medium text-xl md:block md:w-auto">
             <a href="" className="p-2">
               About
             </a>
             <a href="" className="p-2">
               Dropdown Config
             </a>
-          </div>
-
-          <div className="hidden md:flex p-4">
-            <BsGithub size={25} className="text-neutral" />
-            <AiFillLinkedin size={25} className="text-neutral ml-3" />
           </div>
 
           {toggleMenu && (
@@ -167,6 +177,11 @@ export default function Navbar({ configModalForm }) {
               <GiHamburgerMenu size={35} className="text-purple" />
             )}
           </button>
+
+          <div className="hidden md:flex p-4">
+            <BsGithub size={25} className="text-neutral" />
+            <AiFillLinkedin size={25} className="text-neutral ml-3" />
+          </div>
         </div>
       </div>
     </nav>
