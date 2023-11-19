@@ -66,8 +66,12 @@ export default function Navbar({ configModalForm }) {
   }
 
   const Button = ({ onClick, type, children }) => {
-    return <button className="p-2 bg-green rounded-md" onClick={onClick} type={type}>{children}</button>
-  }
+    return (
+      <button className="p-2 bg-green rounded-md" onClick={onClick} type={type}>
+        {children}
+      </button>
+    );
+  };
 
   /**
    * @component
@@ -134,54 +138,43 @@ export default function Navbar({ configModalForm }) {
         <Image src="/logo.png" alt="logo" width="160" height="160" />
 
         <div className="flex flex-row items-center">
-          <div className="hidden text-neutral font-medium text-xl md:block md:w-auto">
-            <a href="" className="p-2">
-              About
-            </a>
-            <a href="" className="p-2">
-              Dropdown Config
-            </a>
-          </div>
-
-          {toggleMenu && (
-            <div className="absolute top-[90px] inset-x-0 max-w-full z-50 flex justify-center duration-500 transition-all">
-              <div className="w-80 bg-purple-900 text-neutral p-4 flex flex-col items-center">
-                <a className="pb-4 font-semibold text-lg" href="">
-                  About
-                </a>
-                <a
-                  className="pb-4 font-semibold text-lg"
-                  name="configuration"
-                  onClick={handleToggleMenuItem}
-                >
-                  Configuration
-                </a>
-                <a className="pb-4 font-semibold text-lg" href="">
-                  About
-                </a>
-                <a className="pb-4 font-semibold text-lg" href="">
-                  About
-                </a>
-              </div>
-            </div>
-          )}
-
-          <button
-            type="button"
-            onClick={handleToggleMenu}
-            className="md:hidden"
+          <div
+            className={`${
+              !toggleMenu ? "hidden" : ""
+            } md:w-auto md:block absolute md:static top-[110px] md:top-0 inset-x-0 max-w-full z-50 md:z-0 flex justify-center duration-500 transition-all ease-in`}
           >
-            {toggleMenu ? (
-              <GiHamburgerMenu size={35} className="text-purple" />
-            ) : (
-              <GiHamburgerMenu size={35} className="text-purple" />
-            )}
-          </button>
+            <div className="md:w-full w-80 bg-purple-900 md:bg-transparent text-neutral p-4 md:p-0 flex md:flex-row flex-col items-center">
+              <a
+                className="md:font-medium md:text-xl md:w-auto md:text-neutral md:p-2 pb-4 font-semibold text-lg"
+                href=""
+              >
+                About
+              </a>
+              <a
+                className="md:font-medium md:text-xl md:w-auto md:text-neutral md:p-2 pb-4 font-semibold text-lg"
+                name="configuration"
+                onClick={handleToggleMenuItem}
+              >
+                Configuration
+              </a>
+            </div>
+          </div>
 
           <div className="hidden md:flex p-4">
             <BsGithub size={25} className="text-neutral" />
             <AiFillLinkedin size={25} className="text-neutral ml-3" />
           </div>
+
+            <button
+              onClick={handleToggleMenu}
+              className="md:hidden p-3"
+            >
+              {!toggleMenu ? (
+                <GiHamburgerMenu size={36} className="text-purple" />
+              ) : (
+                <strong className="text-purple text-3xl">X</strong>
+              )}
+            </button>
         </div>
       </div>
     </nav>
