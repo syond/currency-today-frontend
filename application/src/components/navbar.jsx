@@ -28,6 +28,7 @@ const selectOptions = [
 export default function Navbar({ configModalForm }) {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [toggleConfigModal, setToggleConfigModal] = useState(false);
+  const [toggleDarkMode, setToggleDarkMode] = useState(false);
 
   const [timeUpdateInterval, setTimeUpdateInterval] = useState(0);
 
@@ -94,6 +95,10 @@ export default function Navbar({ configModalForm }) {
     );
   };
 
+  function handleToggleDarkMode(e) {
+    setToggleDarkMode(e.target.checked);
+  }
+
   /**
    * @component
    */
@@ -103,7 +108,12 @@ export default function Navbar({ configModalForm }) {
         <form onSubmit={saveConfigModal}>
           <div className="">
             <label htmlFor="">Dark theme</label>
-            <input type="checkbox" className="bg-purple-800" />
+            <input
+              type="checkbox"
+              className="bg-purple-800"
+              onChange={handleToggleDarkMode}
+              checked={toggleDarkMode}
+            />
           </div>
           <div className="">
             <label htmlFor="">Sound alert when hit price</label>
@@ -178,8 +188,13 @@ export default function Navbar({ configModalForm }) {
     );
   };
 
+  useEffect(() => {
+    if (toggleDarkMode) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
+  }, [toggleDarkMode]);
+
   return (
-    <nav className="bg-purple-600 mb-12 ">
+    <nav className="bg-purple-600 mb-12 dark:bg-gray">
       {toggleConfigModal && <ConfigModal />}
       <div className="flex flex-row items-center justify-between p-3">
         <Image src="/logo.png" alt="logo" width="160" height="160" />
