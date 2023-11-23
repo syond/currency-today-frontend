@@ -178,7 +178,7 @@ export default function Navbar({ configModalForm }) {
           return (
             <a
               key={index}
-              className="md:font-medium md:text-xl md:w-auto md:text-neutral md:p-2 pb-4 font-semibold text-lg"
+              className="md:font-medium md:text-xl md:w-auto md:text-neutral md:p-2 pb-4 font-semibold text-lg cursor-pointer"
               name={item.name}
               onClick={item.onClick}
             >
@@ -189,6 +189,10 @@ export default function Navbar({ configModalForm }) {
       </div>
     );
   };
+
+  function openNewBrowserTab(url) {
+    window.open(url, '_blank');
+  }
 
   useEffect(() => {
     if (toggleDarkMode) document.documentElement.classList.add("dark");
@@ -215,8 +219,8 @@ export default function Navbar({ configModalForm }) {
           </Menu>
 
           <div className="hidden md:flex p-4">
-            <BsGithub size={25} className="text-neutral" />
-            <AiFillLinkedin size={25} className="text-neutral ml-3" />
+            <BsGithub size={25} className="text-neutral cursor-pointer" onClick={() => openNewBrowserTab(process.env.NEXT_PUBLIC_GITHUB_URL)} />
+            <AiFillLinkedin size={25} className="text-neutral ml-3 cursor-pointer" onClick={() => openNewBrowserTab(process.env.NEXT_PUBLIC_LINKEDIN_URL)} />
           </div>
         </div>
       </div>

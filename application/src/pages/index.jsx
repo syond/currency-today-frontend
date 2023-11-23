@@ -103,7 +103,7 @@ export default function Home() {
         key={image.currency_symbol}
         className={`
           rounded-md border border-purple ring-4 hover:brightness-100 transition delay-50 cursor-pointer
-          scale-100 hover:scale-125
+          scale-100 md:hover:scale-125
           ${flag === image.currency_symbol ? "brightness-100" : "brightness-50"}
         `}
         onClick={() => handleClickFlag(image.currency_symbol)}
