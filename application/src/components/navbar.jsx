@@ -107,6 +107,8 @@ export default function Navbar({ configModalForm }) {
       <Modal title="Configuration">
         <form onSubmit={saveConfigModal}>
           <div className="">
+            {toggleDarkMode ?  <i>🔆</i> : <i>🌙</i>}
+            
             <label htmlFor="">Dark theme</label>
             <input
               type="checkbox"
