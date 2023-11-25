@@ -62,5 +62,7 @@ describe("Hooks @ usePersistedState", () => {
     expect(result.current).toBeUndefined();
   });
 
-  test.todo("Should persist data using different storage")
+  test.todo("Should get default value from localStorage key");
+
+  test.todo("Should persist data using different storage");
 });
