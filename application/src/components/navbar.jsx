@@ -1,10 +1,9 @@
-"use client";
-
 import Image from "next/image";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { BsGithub } from "react-icons/bs";
 import { AiFillLinkedin } from "react-icons/ai";
 import { useEffect, useState } from "react";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 const selectOptions = [
   {
@@ -28,7 +27,7 @@ const selectOptions = [
 export default function Navbar({ configModalForm }) {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [toggleConfigModal, setToggleConfigModal] = useState(false);
-  const [toggleDarkMode, setToggleDarkMode] = useState(false);
+  const [toggleDarkMode, setToggleDarkMode] = usePersistedState('dark_mode');
 
   const [timeUpdateInterval, setTimeUpdateInterval] = useState(0);
 
@@ -136,7 +135,7 @@ export default function Navbar({ configModalForm }) {
             </select>
           </div>
 
-          <Button type="submit">Save</Button>
+          {/* <Button type="submit">Save</Button> */}
           <Button type="reset">Reset</Button>
         </form>
       </Modal>
@@ -190,6 +189,10 @@ export default function Navbar({ configModalForm }) {
     );
   };
 
+  /**
+   * @todo Should be moved to a utils file
+   * @param {String} url 
+   */
   function openNewBrowserTab(url) {
     window.open(url, '_blank');
   }
