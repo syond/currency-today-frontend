@@ -1,13 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { ConfigModalFormContext } from "@/Contexts";
 import moment from "moment";
-
 import Image from "next/image";
 
-const fetcher = (resource) =>
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}${resource}`).then((res) =>
-    res.json()
-  );
+import { useApi } from "@/hooks/useApi";
 
 function formatToDateTime(value) {
   return moment(value).format("DD/MM/YYYY - hh:mm:ss");
@@ -58,7 +54,7 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      const result = await fetcher("/currency/BRL");
+      const result = await useApi("currency", "/BRL");
 
       setResponse(result);
     } catch (e) {
@@ -77,8 +73,6 @@ export default function Home() {
   }, [response, flag]);
 
   useEffect(() => {
-    console.log(configFormCtx)
-
     if (configFormCtx.timeUpdateInterval === 0) {
       clearInterval(intervalID);
       setIntervalID(null);
