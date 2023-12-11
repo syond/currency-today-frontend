@@ -5,7 +5,9 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watch",
-    "test:ci": "jest --ci"
+    "test:ci": "jest --ci",
+    "test:e2e:up": "cd .. && docker compose -f docker-compose-dev.yml -f docker-compose-e2e.yml up --exit-code-from cypress",
+    "test:e2e:down": "cd .. && docker compose -f docker-compose-e2e.yml down"
   },
   "dependencies": {
     "moment": "^2.29.4",

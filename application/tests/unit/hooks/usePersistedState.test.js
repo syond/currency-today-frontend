@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { renderHook } from "@testing-library/react";
-import { usePersistedState } from "./usePersistedState";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 describe("Hooks @ usePersistedState", () => {
   test("Should persist data into localStorage", () => {

@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  cypress:
+    image: cypress/included:13.6.0
+    working_dir: /e2e
+    container_name: currency-today-e2e-gui
+    entrypoint: "cypress open --project ."
+    depends_on:
+      - app
+    network_mode: host
+    volumes:
+      - ./application/tests/e2e:/e2e
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY
