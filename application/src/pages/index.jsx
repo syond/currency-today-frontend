@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { ConfigModalFormContext } from "@/Contexts";
 import moment from "moment";
 import Image from "next/image";
@@ -24,20 +24,22 @@ const flagObjects = [
 ];
 
 export default function Home() {
-  const configFormCtx = useContext(ConfigModalFormContext)
+  const configFormCtx = useContext(ConfigModalFormContext);
 
   const [flag, setFlag] = useState("USD");
-  const [currencyPrice, setCurrencyPrice] = useState(null);
+  const [currencyPriceFormatted, setCurrencyPriceFormatted] = useState(null);
+  const [currencyPrice, setCurrencyPrice] = useState(0);
   const [response, setResponse] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
   const [intervalID, setIntervalID] = useState(null);
+
+  const audioElement = useRef(null);
 
   function handleClickFlag(currencySymbol) {
     setFlag(() => currencySymbol);
   }
 
-  function loadCurrencyPrice() {
+  function loadCurrencyPriceByFlag() {
     if (
       response.currencies_exchange &&
       response.currencies_exchange.length > 0
@@ -45,8 +47,11 @@ export default function Home() {
       const currencyExchange = response.currencies_exchange.find(
         (value) => value.currency_code === flag
       );
+
+      setCurrencyPrice(+currencyExchange.price.toFixed(2));
+
       const formattedResult = formatCurrency(currencyExchange.price, "BRL");
-      setCurrencyPrice(formattedResult);
+      setCurrencyPriceFormatted(formattedResult);
     }
   }
 
@@ -55,6 +60,16 @@ export default function Home() {
 
     try {
       const result = await useApi("currency", "/BRL");
+
+      /**
+       * @mock
+       * Remove this code after use it
+       */
+      // const result = await fetch("/api/currency/BRL")
+      //   .then((res) => res.json())
+      //   .catch((e) => {
+      //     throw new Error(e);
+      //   });
 
       setResponse(result);
     } catch (e) {
@@ -69,7 +84,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    loadCurrencyPrice();
+    loadCurrencyPriceByFlag();
   }, [response, flag]);
 
   useEffect(() => {
@@ -127,6 +142,13 @@ export default function Home() {
     );
   };
 
+  function handlePlayAudio() {
+    audioElement.current.play();
+
+    // Reset after audio was played to not play it again
+    configFormCtx.referencePrice = 0;
+  }
+
   return (
     <div className="container max-w-full max-h-screen">
       <section className="flex flex-col items-center mb-6">
@@ -153,11 +175,11 @@ export default function Home() {
                 className="text-4xl text-neutral font-bold"
                 suppressHydrationWarning
               >
-                {flag ? formatCurrency(1, flag) : null}
+                {flag && formatCurrency(1, flag)}
               </span>
               <span className="text-2xl text-neutral font-medium pl-3">=</span>
               <span className="text-4xl text-neutral font-bold pl-3">
-                {currencyPrice}
+                {currencyPriceFormatted}
               </span>
             </div>
             <small className="text-gray-light" suppressHydrationWarning>
@@ -180,6 +202,14 @@ export default function Home() {
           <FlagList />
         )}
       </section>
+
+      <audio ref={audioElement}>
+        <source src="sound-notification.mp3" type="audio/mp3"></source>
+      </audio>
+
+      {configFormCtx.referencePrice &&
+        currencyPrice < +parseFloat(configFormCtx.referencePrice.trim()).toFixed(2) &&
+        handlePlayAudio()}
     </div>
   );
 }

@@ -10,6 +10,10 @@ const selectOptions = [
     value: 0,
     label: "-",
   },
+  // {
+  //   value: 5000,
+  //   label: "5 sec - TESTING PURPOSES",
+  // },
   {
     value: 300000,
     label: "5 minutes",
@@ -28,6 +32,7 @@ export default function Navbar({ configModalForm }) {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [toggleConfigModal, setToggleConfigModal] = useState(false);
   const [toggleDarkMode, setToggleDarkMode] = usePersistedState('dark_mode');
+  const [referencePrice, setReferencePrice] = useState('');
 
   const [timeUpdateInterval, setTimeUpdateInterval] = useState(0);
 
@@ -60,6 +65,7 @@ export default function Navbar({ configModalForm }) {
 
     configModalForm({
       timeUpdateInterval,
+      referencePrice,
     });
 
     setToggleConfigModal(false);
@@ -98,12 +104,18 @@ export default function Navbar({ configModalForm }) {
     setToggleDarkMode(e.target.checked);
   }
 
+  function handleHitPriceInput(e) {
+    setReferencePrice(e.target.value);
+  }
+
   /**
    * @component
    */
   const ConfigModal = () => {
     return (
       <Modal title="Configuration">
+        { referencePrice }
+
         <form onSubmit={saveConfigModal}>
           <div className="">
             {toggleDarkMode ?  <i>🔆</i> : <i>🌙</i>}
@@ -117,9 +129,8 @@ export default function Navbar({ configModalForm }) {
             />
           </div>
           <div className="">
-            <label htmlFor="">Sound alert when hit price</label>
-            <input type="text" className="bg-purple-800" />
-            <legend>aqui vai ser um range</legend>
+            <label htmlFor="">Sound alert when price is lower than</label>
+            <input type="number" className="bg-purple-800" placeholder="0,00" value={referencePrice} onChange={handleHitPriceInput} />
           </div>
           <div className="">
             <label htmlFor="">Update interval</label>
@@ -135,7 +146,7 @@ export default function Navbar({ configModalForm }) {
             </select>
           </div>
 
-          {/* <Button type="submit">Save</Button> */}
+          <Button type="submit">Save</Button>
           <Button type="reset">Reset</Button>
         </form>
       </Modal>

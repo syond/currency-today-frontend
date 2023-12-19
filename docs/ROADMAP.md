@@ -6,7 +6,10 @@
 - [x] Escolher tempo de atualização da moeda;
 - [x] Dark theme;
     - [x] Salvar e recuperar do localStorage;
-- [ ] Emitir alertas sonoros quando o preço da moeda chegar em valor determinado pelo usuário;
+- [ ] Criar **MoneyInput**;
+- [ ] Emitir alertas sonoros:
+    - [ ] Quando o preço da moeda chegar em um valor abaixo do determinado pelo usuário;
+    - [ ] Quando o preço da moeda alterar (somente quando a configuração **update interval** for acionada);
     - [ ] Exibir toaster de feedback;
 - [x] Utilizar API externa para pegar as cotações; (possívelmente https://exchangeratesapi.io/) **Acabei criando uma API em Python e usei webscrapping para capturar os dados do site investing.com**
 - [x] Fazer o valor default ("USD") carregar a partir do response;
