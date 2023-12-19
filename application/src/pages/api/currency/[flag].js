@@ -4,7 +4,7 @@ const database = {
       currency_code: "USD",
       currency_name: null,
       currency_symbol: null,
-      price: 4.7569,
+      price: 4.7269,
     },
     {
       currency_code: "EUR",

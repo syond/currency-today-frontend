@@ -29,11 +29,13 @@ export default function Home() {
   const [flag, setFlag] = useState("USD");
   const [currencyPriceFormatted, setCurrencyPriceFormatted] = useState(null);
   const [currencyPrice, setCurrencyPrice] = useState(0);
+  const [oldCurrencyPrice, setOldCurrencyPrice] = useState(0);
   const [response, setResponse] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [intervalID, setIntervalID] = useState(null);
 
-  const audioElement = useRef(null);
+  const audioElementPriceLowerThan = useRef(null);
+  const audioElementPriceChange = useRef(null);
 
   function handleClickFlag(currencySymbol) {
     setFlag(() => currencySymbol);
@@ -48,7 +50,13 @@ export default function Home() {
         (value) => value.currency_code === flag
       );
 
-      setCurrencyPrice(+currencyExchange.price.toFixed(2));
+      setCurrencyPrice((oldValue) => {
+        console.log(oldValue)
+
+        setOldCurrencyPrice(oldValue);
+
+        return +currencyExchange.price.toFixed(2)
+      });
 
       const formattedResult = formatCurrency(currencyExchange.price, "BRL");
       setCurrencyPriceFormatted(formattedResult);
@@ -142,11 +150,15 @@ export default function Home() {
     );
   };
 
-  function handlePlayAudio() {
-    audioElement.current.play();
+  function handlePlayAudioPriceLowerThan() {
+    audioElementPriceLowerThan.current.play();
 
     // Reset after audio was played to not play it again
     configFormCtx.referencePrice = 0;
+  }
+
+  function handlePlayAudioPriceChange() {
+    audioElementPriceChange.current.play();
   }
 
   return (
@@ -203,13 +215,20 @@ export default function Home() {
         )}
       </section>
 
-      <audio ref={audioElement}>
+      <audio ref={audioElementPriceLowerThan}>
         <source src="sound-notification.mp3" type="audio/mp3"></source>
       </audio>
 
       {configFormCtx.referencePrice &&
-        currencyPrice < +parseFloat(configFormCtx.referencePrice.trim()).toFixed(2) &&
-        handlePlayAudio()}
+        currencyPrice <
+          +parseFloat(configFormCtx.referencePrice.trim()).toFixed(2) &&
+        handlePlayAudioPriceLowerThan()}
+
+      <audio ref={audioElementPriceChange}>
+        <source src="notification-price-change.mp3" type="audio/mp3"></source>
+      </audio>
+
+      { oldCurrencyPrice !== currencyPrice && handlePlayAudioPriceChange() }
     </div>
   );
 }
