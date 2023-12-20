@@ -4,6 +4,7 @@ import moment from "moment";
 import Image from "next/image";
 
 import { useApi } from "@/hooks/useApi";
+import { ApiException } from "@/exceptions/ApiException";
 
 function formatToDateTime(value) {
   return moment(value).format("DD/MM/YYYY - hh:mm:ss");
@@ -81,7 +82,8 @@ export default function Home() {
 
       setResponse(result);
     } catch (e) {
-      throw new Error(e);
+      console.log(e)
+      throw new ApiException;
     } finally {
       setIsLoading(false);
     }
