@@ -4,6 +4,7 @@ import moment from "moment";
 import Image from "next/image";
 
 import { useApi } from "@/hooks/useApi";
+import { usePrevious } from "@/hooks/usePrevious";
 import { ApiException } from "@/exceptions/ApiException";
 
 function formatToDateTime(value) {
@@ -35,6 +36,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [intervalID, setIntervalID] = useState(null);
 
+  const previousResponse = usePrevious(response);
+
   const audioElementPriceLowerThan = useRef(null);
   const audioElementPriceChange = useRef(null);
 
@@ -52,11 +55,9 @@ export default function Home() {
       );
 
       setCurrencyPrice((oldValue) => {
-        console.log(oldValue)
-
         setOldCurrencyPrice(oldValue);
 
-        return +currencyExchange.price.toFixed(2)
+        return +currencyExchange.price.toFixed(2);
       });
 
       const formattedResult = formatCurrency(currencyExchange.price, "BRL");
@@ -82,8 +83,7 @@ export default function Home() {
 
       setResponse(result);
     } catch (e) {
-      console.log(e)
-      throw new ApiException;
+      throw new ApiException();
     } finally {
       setIsLoading(false);
     }
@@ -230,7 +230,9 @@ export default function Home() {
         <source src="notification-price-change.mp3" type="audio/mp3"></source>
       </audio>
 
-      { oldCurrencyPrice !== currencyPrice && handlePlayAudioPriceChange() }
+      {previousResponse !== response &&
+        oldCurrencyPrice !== currencyPrice &&
+        handlePlayAudioPriceChange()}
     </div>
   );
 }
