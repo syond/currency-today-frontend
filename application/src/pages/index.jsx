@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import { ConfigModalFormContext } from "@/Contexts";
+import { ConfigModalFormContext, ToasterContext } from "@/Contexts";
 import moment from "moment";
 import Image from "next/image";
 
@@ -27,6 +27,7 @@ const flagObjects = [
 
 export default function Home() {
   const configFormCtx = useContext(ConfigModalFormContext);
+  const toasterCtx = useContext(ToasterContext)
 
   const [flag, setFlag] = useState("USD");
   const [currencyPriceFormatted, setCurrencyPriceFormatted] = useState(null);
@@ -161,6 +162,8 @@ export default function Home() {
 
   function handlePlayAudioPriceChange() {
     audioElementPriceChange.current.play();
+
+    toasterCtx.openToaster('New price!!!', 'The currency price has changed.')
   }
 
   return (

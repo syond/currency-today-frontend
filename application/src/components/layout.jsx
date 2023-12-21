@@ -3,24 +3,27 @@ import { useState } from "react";
 
 import Navbar from "./navbar";
 import Footer from "./footer";
+import { ToasterProvider } from "@/components/alerts/toasterProvider";
 
 export default function Layout({ children }) {
   /**
    * @refactor
    * Maybe find a better place for this.
    */
-  const [configForm, setConfigForm] = useState({})
+  const [configForm, setConfigForm] = useState({});
   function configModalForm(data) {
     setConfigForm(data);
   }
 
   return (
     <div className="h-screen">
-      <Navbar configModalForm={configModalForm} />
-      <ConfigModalFormContext.Provider value={configForm}>
-        <main className="mb-auto">{children}</main>
-      </ConfigModalFormContext.Provider>
-      <Footer />
+      <ToasterProvider>
+        <Navbar configModalForm={configModalForm} />
+        <ConfigModalFormContext.Provider value={configForm}>
+          <main className="mb-auto">{children}</main>
+        </ConfigModalFormContext.Provider>
+        <Footer />
+      </ToasterProvider>
     </div>
   );
 }
