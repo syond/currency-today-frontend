@@ -7,6 +7,8 @@ import { useApi } from "@/hooks/useApi";
 import { usePrevious } from "@/hooks/usePrevious";
 import { ApiException } from "@/exceptions/ApiException";
 
+import { SkeletonLoading } from "@/components/SkeletonLoading";
+
 function formatToDateTime(value) {
   return moment(value).format("DD/MM/YYYY - hh:mm:ss");
 }
@@ -27,7 +29,7 @@ const flagObjects = [
 
 export default function Home() {
   const configFormCtx = useContext(ConfigModalFormContext);
-  const toasterCtx = useContext(ToasterContext)
+  const toasterCtx = useContext(ToasterContext);
 
   const [flag, setFlag] = useState("USD");
   const [currencyPriceFormatted, setCurrencyPriceFormatted] = useState(null);
@@ -138,21 +140,6 @@ export default function Home() {
     ));
   };
 
-  /**
-   * Generic Component
-   * @param {*} props
-   * @returns
-   */
-  const SkeletonLoading = (props) => {
-    return (
-      <div className={`animate-pulse ${props.className}`}>
-        {/* <div className={`flex ${props.column ? 'flex-col' : ''} space-y-2 justify-center items-center`}>
-        </div> */}
-        {props.children}
-      </div>
-    );
-  };
-
   function handlePlayAudioPriceLowerThan() {
     audioElementPriceLowerThan.current.play();
 
@@ -163,7 +150,7 @@ export default function Home() {
   function handlePlayAudioPriceChange() {
     audioElementPriceChange.current.play();
 
-    toasterCtx.openToaster('New price!!!', 'The currency price has changed.')
+    toasterCtx.openToaster("New price!!!", "The currency price has changed.");
   }
 
   return (
