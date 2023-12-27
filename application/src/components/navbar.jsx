@@ -1,9 +1,14 @@
+import { useContext } from "react";
+import { useEffect, useState } from "react";
+
 import Image from "next/image";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { BsGithub } from "react-icons/bs";
 import { AiFillLinkedin } from "react-icons/ai";
-import { useEffect, useState } from "react";
+
 import { usePersistedState } from "@/hooks/usePersistedState";
+
+import { ConfigModalFormContext } from "@/Contexts";
 
 import { BaseButton } from "./button/BaseButton";
 
@@ -30,7 +35,9 @@ const selectOptions = [
   },
 ];
 
-export default function Navbar({ configModalForm }) {
+export default function Navbar() {
+  const configModalCtx = useContext(ConfigModalFormContext);
+
   const [toggleMenu, setToggleMenu] = useState(false);
   const [toggleConfigModal, setToggleConfigModal] = useState(false);
   const [toggleDarkMode, setToggleDarkMode] = usePersistedState('dark_mode');
@@ -65,7 +72,7 @@ export default function Navbar({ configModalForm }) {
   function saveConfigModal(e) {
     e.preventDefault();
 
-    configModalForm({
+    configModalCtx.configModalForm({
       timeUpdateInterval,
       referencePrice,
     });
