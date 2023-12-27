@@ -8,7 +8,7 @@ import { AiFillLinkedin } from "react-icons/ai";
 
 import { usePersistedState } from "@/hooks/usePersistedState";
 
-import { ConfigModalFormContext } from "@/Contexts";
+import { ConfigModalFormContext, UtilsContext } from "@/Contexts";
 
 import { BaseButton } from "./button/BaseButton";
 
@@ -37,11 +37,12 @@ const selectOptions = [
 
 export default function Navbar() {
   const configModalCtx = useContext(ConfigModalFormContext);
+  const utilsCtx = useContext(UtilsContext);
 
   const [toggleMenu, setToggleMenu] = useState(false);
   const [toggleConfigModal, setToggleConfigModal] = useState(false);
-  const [toggleDarkMode, setToggleDarkMode] = usePersistedState('dark_mode');
-  const [referencePrice, setReferencePrice] = useState('');
+  const [toggleDarkMode, setToggleDarkMode] = usePersistedState("dark_mode");
+  const [referencePrice, setReferencePrice] = useState("");
 
   const [timeUpdateInterval, setTimeUpdateInterval] = useState(0);
 
@@ -92,7 +93,9 @@ export default function Navbar() {
           {/* modal-header */}
           <div>
             <h5>{title}</h5>
-            <BaseButton onClick={() => setToggleConfigModal(false)}>Close</BaseButton>
+            <BaseButton onClick={() => setToggleConfigModal(false)}>
+              Close
+            </BaseButton>
           </div>
           {/* modal-body */}
           <div>{children}</div>
@@ -119,12 +122,12 @@ export default function Navbar() {
   const ConfigModal = () => {
     return (
       <Modal title="Configuration">
-        { referencePrice }
+        {referencePrice}
 
         <form onSubmit={saveConfigModal}>
           <div className="">
-            {toggleDarkMode ?  <i>🔆</i> : <i>🌙</i>}
-            
+            {toggleDarkMode ? <i>🔆</i> : <i>🌙</i>}
+
             <label htmlFor="">Dark theme</label>
             <input
               type="checkbox"
@@ -135,7 +138,13 @@ export default function Navbar() {
           </div>
           <div className="">
             <label htmlFor="">Sound alert when price is lower than</label>
-            <input type="number" className="bg-purple-800" placeholder="0,00" value={referencePrice} onChange={handleHitPriceInput} />
+            <input
+              type="number"
+              className="bg-purple-800"
+              placeholder="0,00"
+              value={referencePrice}
+              onChange={handleHitPriceInput}
+            />
           </div>
           <div className="">
             <label htmlFor="">Update interval</label>
@@ -209,14 +218,6 @@ export default function Navbar() {
     );
   };
 
-  /**
-   * @todo Should be moved to a utils file
-   * @param {String} url 
-   */
-  function openNewBrowserTab(url) {
-    window.open(url, '_blank');
-  }
-
   useEffect(() => {
     if (toggleDarkMode) document.documentElement.classList.add("dark");
     else document.documentElement.classList.remove("dark");
@@ -242,8 +243,22 @@ export default function Navbar() {
           </Menu>
 
           <div className="hidden md:flex p-4">
-            <BsGithub size={25} className="text-neutral cursor-pointer" onClick={() => openNewBrowserTab(process.env.NEXT_PUBLIC_GITHUB_URL)} />
-            <AiFillLinkedin size={25} className="text-neutral ml-3 cursor-pointer" onClick={() => openNewBrowserTab(process.env.NEXT_PUBLIC_LINKEDIN_URL)} />
+            <BsGithub
+              size={25}
+              className="text-neutral cursor-pointer"
+              onClick={() =>
+                utilsCtx.Browser.openNewTab(process.env.NEXT_PUBLIC_GITHUB_URL)
+              }
+            />
+            <AiFillLinkedin
+              size={25}
+              className="text-neutral ml-3 cursor-pointer"
+              onClick={() =>
+                utilsCtx.Browser.openNewTab(
+                  process.env.NEXT_PUBLIC_LINKEDIN_URL
+                )
+              }
+            />
           </div>
         </div>
       </div>
