@@ -120,7 +120,7 @@ export default function Home() {
     configFormCtx.referencePrice = 0;
   }
 
-  function handlePlayAudioPriceChange() {
+  function handlePlayAudioWhenPriceChange() {
     audioElementPriceChange.current.play();
 
     toasterCtx.openToaster("New price!!!", "The currency price has changed.");
@@ -199,7 +199,7 @@ export default function Home() {
 
       {previousResponse !== response &&
         oldCurrencyPrice !== currencyPrice &&
-        handlePlayAudioPriceChange()}
+        handlePlayAudioWhenPriceChange()}
     </div>
   );
 }
