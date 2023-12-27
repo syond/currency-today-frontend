@@ -5,6 +5,8 @@ import { AiFillLinkedin } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { usePersistedState } from "@/hooks/usePersistedState";
 
+import { BaseButton } from "./button/BaseButton";
+
 const selectOptions = [
   {
     value: 0,
@@ -71,15 +73,9 @@ export default function Navbar({ configModalForm }) {
     setToggleConfigModal(false);
   }
 
-  const Button = ({ onClick, type, children }) => {
-    return (
-      <button className="p-2 bg-green rounded-md" onClick={onClick} type={type}>
-        {children}
-      </button>
-    );
-  };
-
   /**
+   * @todo
+   * refactor
    * @component
    */
   const Modal = ({ title, children }) => {
@@ -89,7 +85,7 @@ export default function Navbar({ configModalForm }) {
           {/* modal-header */}
           <div>
             <h5>{title}</h5>
-            <Button onClick={() => setToggleConfigModal(false)}>Close</Button>
+            <BaseButton onClick={() => setToggleConfigModal(false)}>Close</BaseButton>
           </div>
           {/* modal-body */}
           <div>{children}</div>
@@ -109,6 +105,8 @@ export default function Navbar({ configModalForm }) {
   }
 
   /**
+   * @todo
+   * refactor
    * @component
    */
   const ConfigModal = () => {
@@ -146,14 +144,16 @@ export default function Navbar({ configModalForm }) {
             </select>
           </div>
 
-          <Button type="submit">Save</Button>
-          <Button type="reset">Reset</Button>
+          <BaseButton type="submit">Save</BaseButton>
+          <BaseButton type="reset">Reset</BaseButton>
         </form>
       </Modal>
     );
   };
 
   /**
+   * @todo
+   * refactor
    * @component
    */
   const Menu = ({ children, toggleMobileMenuFlag }) => {
@@ -167,18 +167,20 @@ export default function Navbar({ configModalForm }) {
           {children}
         </div>
 
-        <button onClick={handleToggleMenu} className="md:hidden p-3">
+        <BaseButton onClick={handleToggleMenu} className="md:hidden p-3">
           {!toggleMenu ? (
             <GiHamburgerMenu size={36} className="text-purple" />
           ) : (
             <strong className="text-purple text-3xl">X</strong>
           )}
-        </button>
+        </BaseButton>
       </>
     );
   };
 
   /**
+   * @todo
+   * refactor
    * @component
    */
   const MenuItem = ({ items }) => {
