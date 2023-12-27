@@ -12,7 +12,8 @@
     - [x] Quando o preço da moeda chegar em um valor abaixo do determinado pelo usuário;
     - [x] Quando o preço da moeda alterar (somente quando a configuração **update interval** for acionada);
         - [x] Bug: Audio tocando quando altera a bandeira;
-    - [ ] Exibir toaster de feedback;
+    - [x] Exibir toaster de feedback;
+        - [ ] A "barra de progresso" está funcionando mas não está diminuindo suavemente como eu queria;
 - [x] Utilizar API externa para pegar as cotações; (possívelmente https://exchangeratesapi.io/) **Acabei criando uma API em Python e usei webscrapping para capturar os dados do site investing.com**
 - [x] Fazer o valor default ("USD") carregar a partir do response;
 - [ ] Refactor componentes;

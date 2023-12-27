@@ -51,6 +51,15 @@ module.exports = {
         lg: '976px',
         xl: '1440px',
       },
+      animation: {
+        'fade': 'fadeOut 3s ease-in-out',
+      },
+      keyframes: theme => ({
+        fadeOut: {
+          '0%': { backgroundColor: theme('colors.neutral') },
+          '100%': { backgroundColor: theme('colors.transparent') },
+        },
+      }),
     }
   },
   plugins: [],
