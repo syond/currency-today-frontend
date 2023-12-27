@@ -8,6 +8,7 @@ import { usePrevious } from "@/hooks/usePrevious";
 import { ApiException } from "@/exceptions/ApiException";
 
 import { SkeletonLoading } from "@/components/SkeletonLoading";
+import { FlagList } from "@/components/list/FlagList";
 
 function formatToDateTime(value) {
   return moment(value).format("DD/MM/YYYY - hh:mm:ss");
@@ -115,31 +116,6 @@ export default function Home() {
     }
   }, [configFormCtx.timeUpdateInterval]);
 
-  /**
-   * Component
-   * @returns
-   */
-  const FlagList = () => {
-    return flagObjects.map((image) => (
-      <div
-        key={image.currency_symbol}
-        className={`
-          rounded-md border border-purple ring-4 hover:brightness-100 transition delay-50 cursor-pointer
-          scale-100 md:hover:scale-125
-          ${flag === image.currency_symbol ? "brightness-100" : "brightness-50"}
-        `}
-        onClick={() => handleClickFlag(image.currency_symbol)}
-      >
-        <Image
-          src={image.src}
-          alt={image.currency_symbol}
-          width="80"
-          height="80"
-        />
-      </div>
-    ));
-  };
-
   function handlePlayAudioPriceLowerThan() {
     audioElementPriceLowerThan.current.play();
 
@@ -203,7 +179,11 @@ export default function Home() {
             </div>
           </SkeletonLoading>
         ) : (
-          <FlagList />
+          <FlagList
+            flagObjects={flagObjects}
+            currentFlag={flag}
+            handleClickFlag={handleClickFlag}
+          />
         )}
       </section>
 
