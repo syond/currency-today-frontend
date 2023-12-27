@@ -4,6 +4,7 @@ import { useState } from "react";
 import Navbar from "./navbar";
 import Footer from "./footer";
 import { ToasterProvider } from "@/components/alerts/toasterProvider";
+import { UtilsProvider } from "./providers/UtilsProvider";
 
 export default function Layout({ children }) {
   /**
@@ -17,13 +18,15 @@ export default function Layout({ children }) {
 
   return (
     <div className="h-screen">
-      <ToasterProvider>
-        <Navbar configModalForm={configModalForm} />
-        <ConfigModalFormContext.Provider value={configForm}>
-          <main className="mb-auto">{children}</main>
-        </ConfigModalFormContext.Provider>
-        <Footer />
-      </ToasterProvider>
+      <UtilsProvider>
+        <ToasterProvider>
+          <Navbar configModalForm={configModalForm} />
+          <ConfigModalFormContext.Provider value={configForm}>
+            <main className="mb-auto">{children}</main>
+          </ConfigModalFormContext.Provider>
+          <Footer />
+        </ToasterProvider>
+      </UtilsProvider>
     </div>
   );
 }

@@ -1,6 +1,10 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import { ConfigModalFormContext, ToasterContext } from "@/Contexts";
-import moment from "moment";
+import {
+  ConfigModalFormContext,
+  ToasterContext,
+  UtilsContext,
+} from "@/Contexts";
+
 import Image from "next/image";
 
 import { useApi } from "@/hooks/useApi";
@@ -10,17 +14,6 @@ import { ApiException } from "@/exceptions/ApiException";
 import { SkeletonLoading } from "@/components/SkeletonLoading";
 import { FlagList } from "@/components/list/FlagList";
 
-function formatToDateTime(value) {
-  return moment(value).format("DD/MM/YYYY - hh:mm:ss");
-}
-
-function formatCurrency(value, code) {
-  return value.toLocaleString(undefined, {
-    style: "currency",
-    currency: code,
-  });
-}
-
 const flagObjects = [
   { src: "/UE.png", currency_symbol: "EUR" },
   { src: "/UK.png", currency_symbol: "GBP" },
@@ -29,8 +22,9 @@ const flagObjects = [
 ];
 
 export default function Home() {
-  const configFormCtx = useContext(ConfigModalFormContext);
+  const utilsCtx = useContext(UtilsContext);
   const toasterCtx = useContext(ToasterContext);
+  const configFormCtx = useContext(ConfigModalFormContext);
 
   const [flag, setFlag] = useState("USD");
   const [currencyPriceFormatted, setCurrencyPriceFormatted] = useState(null);
@@ -64,7 +58,10 @@ export default function Home() {
         return +currencyExchange.price.toFixed(2);
       });
 
-      const formattedResult = formatCurrency(currencyExchange.price, "BRL");
+      const formattedResult = utilsCtx.FormatValue.currency(
+        currencyExchange.price,
+        "BRL"
+      );
       setCurrencyPriceFormatted(formattedResult);
     }
   }
@@ -155,7 +152,7 @@ export default function Home() {
                 className="text-4xl text-neutral font-bold"
                 suppressHydrationWarning
               >
-                {flag && formatCurrency(1, flag)}
+                {flag && utilsCtx.FormatValue.currency(1, flag)}
               </span>
               <span className="text-2xl text-neutral font-medium pl-3">=</span>
               <span className="text-4xl text-neutral font-bold pl-3">
@@ -163,7 +160,7 @@ export default function Home() {
               </span>
             </div>
             <small className="text-gray-light" suppressHydrationWarning>
-              Last update: {formatToDateTime(response.updatedAt)}
+              Last update: {utilsCtx.FormatValue.toDateTime(response.updatedAt)}
             </small>
           </>
         )}
